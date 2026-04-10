@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Research Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <style>
+    :root {
+      --bg: #0c0e12;
+      --bg-card: #13161d;
+      --bg-card-hover: #1a1e28;
+      --border: #1f2433;
+      --border-subtle: #161922;
+      --text: #cdd6f4;
+      --text-muted: #6c7086;
+      --text-dim: #45475a;
+      --accent: #cba6f7;
+      --accent2: #89b4fa;
+      --accent3: #a6e3a1;
+      --accent-warm: #fab387;
+      --tag-bg: #1e1e2e;
+      --tag-border: #313244;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border-subtle) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .site-title {
+      font-family: 'Crimson Pro', serif;
+      font-size: 2.4rem;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .site-title span {
+      color: var(--accent);
+    }
+    .site-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-upload {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #1e1e2e;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-upload:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 16px;
+    }
+    #searchInput {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 16px 13px 44px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #searchInput:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(203, 166, 247, 0.08);
+    }
+    #searchInput::placeholder { color: var(--text-dim); }
+
+    /* ── Tags filter ── */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .filter-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .tag-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .tag-pill.active {
+      background: rgba(203, 166, 247, 0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .tag-pill .count {
+      font-size: 10px;
+      opacity: 0.6;
+    }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .stats-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .type-filters {
+      display: flex;
+      gap: 8px;
+    }
+    .type-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .type-btn:hover, .type-btn.active {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    /* ── Article grid ── */
+    #articleGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .article-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .article-card:hover {
+      background: var(--bg-card-hover);
+      border-color: #2a2d3e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .article-card:hover::before { opacity: 1; }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .card-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .card-type.md { background: rgba(166, 227, 161, 0.1); color: var(--accent3); }
+    .card-type.pdf { background: rgba(250, 179, 135, 0.1); color: var(--accent-warm); }
+
+    .card-title {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: #fff;
+    }
+
+    .card-excerpt {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: auto;
+    }
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--text-muted);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+    .empty-state p { color: var(--text-muted); font-size: 14px; }
+
+    /* ── Modal (Add Article) ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #13161d;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h2 {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+
+    .tag-input-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      min-height: 42px;
+      transition: border-color 0.2s;
+      cursor: text;
+    }
+    .tag-input-wrap:focus-within { border-color: var(--accent); }
+    .tag-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(203, 166, 247, 0.12);
+      border: 1px solid rgba(203, 166, 247, 0.3);
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tag-chip button {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.6;
+    }
+    .tag-chip button:hover { opacity: 1; }
+    #tagRealInput {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      flex: 1;
+      min-width: 80px;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(203, 166, 247, 0.04);
+      color: var(--accent);
+    }
+    .drop-zone .drop-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .drop-zone .drop-text { font-size: 13px; }
+    .drop-zone .drop-hint { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+    #fileInput { display: none; }
+    .file-selected {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+    .btn-cancel {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+    .btn-save {
+      background: var(--accent);
+      border: none;
+      color: #1e1e2e;
+      padding: 9px 24px;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-save:hover { opacity: 0.85; }
+
+    /* ── Instructions panel ── */
+    .instructions {
+      margin-top: 60px;
+      padding: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent2);
+    }
+    .instructions h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 16px;
+    }
+    .instructions ol { padding-left: 20px; color: var(--text-muted); font-size: 13px; line-height: 2; }
+    .instructions code {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      margin-top: 60px;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 600px) {
+      #articleGrid { grid-template-columns: 1fr; }
+      .site-title { font-size: 1.8rem; }
+      header { padding: 28px 0 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <header>
+    <div>
+      <div class="site-title">Research<span>.</span>Log</div>
+      <div class="site-subtitle">// Personal Technical Articles</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-upload" onclick="openModal()">
+        <span>＋</span> New Article
+      </button>
+    </div>
+  </header>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="searchInput" placeholder="搜索文章标题、关键词、摘要…" autocomplete="off" />
+  </div>
+
+  <!-- Tag filters -->
+  <div class="filter-row">
+    <span class="filter-label">标签 ·</span>
+    <div id="tagFilters"></div>
+  </div>
+
+  <!-- Stats + type filter -->
+  <div class="stats-bar">
+    <span class="stats-text" id="statsText">加载中…</span>
+    <div class="type-filters">
+      <button class="type-btn active" data-type="all" onclick="filterByType(this, 'all')">全部</button>
+      <button class="type-btn" data-type="md" onclick="filterByType(this, 'md')">Markdown</button>
+      <button class="type-btn" data-type="pdf" onclick="filterByType(this, 'pdf')">PDF</button>
+    </div>
+  </div>
+
+  <!-- Article cards -->
+  <div id="articleGrid"></div>
+
+  <!-- Usage instructions -->
+  <div class="instructions">
+    <h3>// 如何添加文章</h3>
+    <ol>
+      <li>将 <code>.md</code> 或 <code>.pdf</code> 文件放入仓库的 <code>articles/</code> 目录</li>
+      <li>编辑 <code>data/articles.json</code>，添加文章的元数据（标题、标签、关键词等）</li>
+      <li>推送到 GitHub，GitHub Actions 会自动部署到 GitHub Pages</li>
+      <li>也可点击上方 <strong>New Article</strong> 按钮，复制生成的 JSON 条目后手动添加</li>
+    </ol>
+  </div>
+
+  <footer>Built with GitHub Pages · ResearchLog v1.0</footer>
+</div>
+
+<!-- Add Article Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Add New Article</h2>
+
+    <div class="form-group">
+      <label class="form-label">文章标题 *</label>
+      <input type="text" class="form-input" id="f-title" placeholder="e.g. Introduction to Spectral GNNs" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">文件 (上传 .md 或 .pdf)</label>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <span class="drop-icon">📎</span>
+        <div class="drop-text">点击或拖拽文件到此处</div>
+        <div class="drop-hint">支持 .md · .pdf</div>
+      </div>
+      <input type="file" id="fileInput" accept=".md,.pdf" />
+      <div id="fileSelectedInfo" style="display:none" class="file-selected">
+        <span id="fileSelectedName"></span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">标签 (回车添加)</label>
+      <div class="tag-input-wrap" id="tagInputWrap" onclick="document.getElementById('tagRealInput').focus()">
+        <input type="text" id="tagRealInput" placeholder="输入标签后按回车…" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">关键词 (用于搜索，逗号分隔)</label>
+      <input type="text" class="form-input" id="f-keywords" placeholder="e.g. ChebNet, graph Laplacian, spectral GNN" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">摘要</label>
+      <textarea class="form-textarea" id="f-excerpt" placeholder="一段简短的文章描述…"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">日期</label>
+      <input type="date" class="form-input" id="f-date" />
+    </div>
+
+    <div id="generatedJson" style="display:none; margin-top:16px;">
+      <label class="form-label">生成的 JSON 条目 (添加到 data/articles.json)</label>
+      <textarea class="form-textarea" id="jsonOutput" style="min-height:160px; font-family: 'JetBrains Mono', monospace; font-size:12px;" readonly></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" onclick="generateJson()">生成 JSON 条目</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let allArticles = [];
+let activeTags = new Set();
+let activeType = 'all';
+let fuse;
+
+// ── Load articles ──
+async function loadArticles() {
+  try {
+    const res = await fetch('data/articles.json');
+    allArticles = await res.json();
+  } catch {
+    // Use demo data if file not found
+    allArticles = [
+      {
+        id: "spectral-gnn-intro",
+        title: "Introduction to Spectral Graph Neural Networks",
+        file: "articles/spectral-gnn-intro.md",
+        type: "md",
+        date: "2026-03-15",
+        tags: ["GNN", "spectral", "deep learning", "graph theory"],
+        keywords: ["ChebNet", "graph Laplacian", "polynomial filter", "eigenvalue"],
+        excerpt: "An overview of spectral-domain approaches to graph neural networks, covering the transition from graph signal processing to learnable polynomial filters."
+      },
+      {
+        id: "clash-framework",
+        title: "CLASH: Cross-Relation Adaptive Spectral Heterogeneous GNN",
+        file: "articles/clash-framework.pdf",
+        type: "pdf",
+        date: "2026-04-01",
+        tags: ["GNN", "heterogeneous graph", "spectral", "NeurIPS"],
+        keywords: ["CLASH", "eigenvalue correction", "heterogeneous graph", "node-adaptive"],
+        excerpt: "A spectral GNN framework for heterogeneous graphs using node-adaptive eigenvalue perturbation, analytically equivalent to polynomial coefficient transformation."
+      },
+      {
+        id: "graphllm-robustness",
+        title: "GraphLLM Robustness Under Noisy Graph Data",
+        file: "articles/graphllm-robustness.md",
+        type: "md",
+        date: "2026-02-20",
+        tags: ["LLM", "GNN", "robustness", "ICDE"],
+        keywords: ["GraphLLM", "text-structure consistency", "noisy graph", "anomaly detection"],
+        excerpt: "Exploring the robustness of LLM-enhanced GNNs when graph structure and text attributes are noisy, with a unified scoring mechanism based on semantic consistency."
+      }
+    ];
+  }
+
+  buildFuse();
+  buildTagFilters();
+  renderArticles(allArticles);
+}
+
+function buildFuse() {
+  fuse = new Fuse(allArticles, {
+    keys: [
+      { name: 'title', weight: 0.5 },
+      { name: 'keywords', weight: 0.3 },
+      { name: 'excerpt', weight: 0.15 },
+      { name: 'tags', weight: 0.05 }
+    ],
+    threshold: 0.4,
+    includeScore: true
+  });
+}
+
+// ── Tag filters ──
+function buildTagFilters() {
+  const tagCount = {};
+  allArticles.forEach(a => a.tags.forEach(t => {
+    tagCount[t] = (tagCount[t] || 0) + 1;
+  }));
+
+  const container = document.getElementById('tagFilters');
+  container.innerHTML = '';
+
+  // All pill
+  const allPill = document.createElement('span');
+  allPill.className = 'tag-pill active';
+  allPill.dataset.tag = '__all__';
+  allPill.innerHTML = `全部 <span class="count">${allArticles.length}</span>`;
+  allPill.onclick = () => toggleTag(allPill, '__all__');
+  container.appendChild(allPill);
+
+  Object.entries(tagCount).sort((a,b) => b[1]-a[1]).forEach(([tag, cnt]) => {
+    const pill = document.createElement('span');
+    pill.className = 'tag-pill';
+    pill.dataset.tag = tag;
+    pill.innerHTML = `${tag} <span class="count">${cnt}</span>`;
+    pill.onclick = () => toggleTag(pill, tag);
+    container.appendChild(pill);
+  });
+}
+
+function toggleTag(el, tag) {
+  if (tag === '__all__') {
+    activeTags.clear();
+    document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  } else {
+    document.querySelector('.tag-pill[data-tag="__all__"]').classList.remove('active');
+    if (activeTags.has(tag)) {
+      activeTags.delete(tag);
+      el.classList.remove('active');
+    } else {
+      activeTags.add(tag);
+      el.classList.add('active');
+    }
+    if (activeTags.size === 0) {
+      document.querySelector('.tag-pill[data-tag="__all__"]').classList.add('active');
+    }
+  }
+  applyFilters();
+}
+
+function filterByType(el, type) {
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeType = type;
+  applyFilters();
+}
+
+function applyFilters() {
+  const query = document.getElementById('searchInput').value.trim();
+  let results = query ? fuse.search(query).map(r => r.item) : [...allArticles];
+
+  if (activeTags.size > 0) {
+    results = results.filter(a => [...activeTags].every(t => a.tags.includes(t)));
+  }
+  if (activeType !== 'all') {
+    results = results.filter(a => a.type === activeType);
+  }
+  renderArticles(results);
+}
+
+// ── Render ──
+function renderArticles(articles) {
+  const grid = document.getElementById('articleGrid');
+  const stats = document.getElementById('statsText');
+  stats.textContent = `${articles.length} 篇文章`;
+
+  if (articles.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>没有找到匹配的文章</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = articles.map(a => `
+    <a class="article-card" href="viewer.html?id=${a.id}" onclick="saveScrollPos()">
+      <div class="card-meta">
+        <span class="card-date">${formatDate(a.date)}</span>
+        <span class="card-type ${a.type}">${a.type.toUpperCase()}</span>
+      </div>
+      <div class="card-title">${a.title}</div>
+      <div class="card-excerpt">${a.excerpt}</div>
+      <div class="card-tags">${a.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+    </a>
+  `).join('');
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function saveScrollPos() {
+  sessionStorage.setItem('scrollPos', window.scrollY);
+}
+
+// ── Search ──
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+// ── Modal ──
+let modalTags = [];
+
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  modalTags = [];
+  document.getElementById('tagRealInput').value = '';
+  document.querySelectorAll('.tag-chip').forEach(c => c.remove());
+  document.getElementById('generatedJson').style.display = 'none';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// Tag input
+document.getElementById('tagRealInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,$/, '');
+    if (val && !modalTags.includes(val)) {
+      modalTags.push(val);
+      addTagChip(val);
+    }
+    e.target.value = '';
+  }
+});
+
+function addTagChip(tag) {
+  const wrap = document.getElementById('tagInputWrap');
+  const input = document.getElementById('tagRealInput');
+  const chip = document.createElement('span');
+  chip.className = 'tag-chip';
+  chip.innerHTML = `${tag}<button onclick="removeTag('${tag}', this)">×</button>`;
+  wrap.insertBefore(chip, input);
+}
+
+function removeTag(tag, btn) {
+  modalTags = modalTags.filter(t => t !== tag);
+  btn.parentElement.remove();
+}
+
+// File drop
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+let selectedFile = null;
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+function handleFile(file) {
+  if (!file) return;
+  selectedFile = file;
+  const info = document.getElementById('fileSelectedInfo');
+  info.style.display = 'flex';
+  document.getElementById('fileSelectedName').textContent = `📎 ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+  if (!document.getElementById('f-title').value) {
+    document.getElementById('f-title').value = file.name.replace(/\.(md|pdf)$/i, '').replace(/[-_]/g, ' ');
+  }
+}
+
+function generateJson() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { alert('请输入文章标题'); return; }
+
+  const filename = selectedFile ? selectedFile.name : title.toLowerCase().replace(/\s+/g, '-') + '.md';
+  const ext = filename.split('.').pop().toLowerCase();
+  const id = filename.replace(/\.(md|pdf)$/i, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const keywords = document.getElementById('f-keywords').value.split(',').map(k => k.trim()).filter(Boolean);
+  const date = document.getElementById('f-date').value || new Date().toISOString().split('T')[0];
+  const excerpt = document.getElementById('f-excerpt').value.trim() || '暂无摘要';
+
+  const entry = { id, title, file: `articles/${filename}`, type: ext, date, tags: [...modalTags], keywords, excerpt };
+
+  document.getElementById('jsonOutput').value = JSON.stringify(entry, null, 2);
+  document.getElementById('generatedJson').style.display = 'block';
+}
+
+// ── Init ──
+loadArticles();
+</script>
+</body>
+</html>
