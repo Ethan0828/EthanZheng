@@ -26,6 +26,11 @@
   //   }
   // };
   MathJax = {
+    startup: {
+      ready() {
+        MathJax.startup.defaultReady();
+      }
+    },
     chtml: {
       fontURL: 'https://unpkg.com/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2'
     },
@@ -41,7 +46,9 @@
     }
   };
   </script>
-  <script src="libs/mathjax.min.js"></script>
+  <!-- <script src="libs/mathjax.min.js"></script> -->
+  <script src="libs/mathjax.min.js" async></script>
+
 
   
   <style>
@@ -472,8 +479,15 @@ async function renderMarkdown(main, meta) {
       /!\[([^\]]*)\]\((?!http)([^)]+)\)/g,
       (_, alt, src) => `![${alt}](${basePath}${src})`
     ));
+    // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
+    // hljs.highlightAll();
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     hljs.highlightAll();
+    
+    // 等待 MathJax 自身的启动 Promise
+    window.MathJax.startup.promise.then(() => {
+      MathJax.typesetPromise([document.getElementById('mdContent')]);
+    });
     // MathJax.typesetPromise();
     // if (window.MathJax && MathJax.typesetPromise) {
     //   await MathJax.typesetPromise([document.getElementById('mdContent')]);
