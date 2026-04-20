@@ -550,7 +550,30 @@ async function renderMarkdown(main, meta) {
       (_, alt, src) => `![${alt}](${basePath}${src})`
     );
 
-    const html = marked.parse(text);
+    // const html = marked.parse(text);
+    // 1. 保护数学公式不被 marked 破坏
+    const mathCache = [];
+    let protected_text = text
+      .replace(/\$\$([\s\S]+?)\$\$/g, (_, math) => {
+        mathCache.push({ display: true, math });
+        return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
+      })
+      .replace(/\$([^\n$]+?)\$/g, (_, math) => {
+        mathCache.push({ display: false, math });
+        return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
+      });
+    
+    // 2. Markdown 渲染
+    let html = marked.parse(protected_text);
+    
+    // 3. 还原公式占位符
+    html = html.replace(
+      /<span class="math-placeholder" data-index="(\d+)"><\/span>/g,
+      (_, i) => {
+        const { display, math } = mathCache[i];
+        return display ? `$$${math}$$` : `$${math}$`;
+      }
+    );
 
     // 写入页面
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
