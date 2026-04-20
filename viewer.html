@@ -46,8 +46,8 @@
     }
   };
   </script>
-  <!-- <script src="libs/mathjax.min.js"></script> -->
-  <script src="libs/mathjax.min.js" async></script>
+  <script src="libs/mathjax.min.js"></script>
+  <!-- <script src="libs/mathjax.min.js" async></script> -->
 
 
   
@@ -481,13 +481,16 @@ async function renderMarkdown(main, meta) {
     ));
     // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     // hljs.highlightAll();
+    // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
+    // hljs.highlightAll();
+    
+    // // 等待 MathJax 自身的启动 Promise
+    // window.MathJax.startup.promise.then(() => {
+    //   MathJax.typesetPromise([document.getElementById('mdContent')]);
+    // });
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     hljs.highlightAll();
-    
-    // 等待 MathJax 自身的启动 Promise
-    window.MathJax.startup.promise.then(() => {
-      MathJax.typesetPromise([document.getElementById('mdContent')]);
-    });
+    await MathJax.typesetPromise([document.getElementById('mdContent')]);
     // MathJax.typesetPromise();
     // if (window.MathJax && MathJax.typesetPromise) {
     //   await MathJax.typesetPromise([document.getElementById('mdContent')]);
