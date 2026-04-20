@@ -445,7 +445,8 @@ async function renderMarkdown(main, meta) {
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     buildTOC();
     hljs.highlightAll();
-  } catch {
+  } catch(e) {
+    console.error('renderMarkdown error:', e);
     main.innerHTML = renderHeader(meta) + `
       <div class="md-content">
         <blockquote>
