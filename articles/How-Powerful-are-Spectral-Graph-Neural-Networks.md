@@ -111,27 +111,27 @@
 4. 对于 $\alpha$ 的分析:
     - 目标是求 $\partial^{2}R/(\partial\alpha_{k_{1}}\partial\alpha_{k_{2}})$，即 **Hessian 矩阵** $H$ 的元素。
     - 把 $R$ 看成 $\alpha$ 的二次函数，固定其他参数（$W$）不变。记 $\Phi(\alpha) = \sum_{k}\alpha_{k}\,g_{k}(\hat L)XW .$则$R = \tfrac12\|\Phi(\alpha)-Y\|_{F}^{2}.$，对 $\alpha_{k_{1}}$ 求梯度：$\frac{\partial R}{\partial\alpha_{k_{1}}}
-    = \bigl(\Phi(\alpha)-Y\bigr)^{\!T}
+    = \bigl(\Phi(\alpha)-Y\bigr)^{'T}
         \frac{\partial\Phi}{\partial\alpha_{k_{1}}}
-    = \bigl(\Phi(\alpha)-Y\bigr)^{\!T}
+    = \bigl(\Phi(\alpha)-Y\bigr)^{'T}
         g_{k_{1}}(\hat L)XW .$，再对 $\alpha_{k_{2}}$ 求导，得到 Hessian 元素
     $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
-    = \bigl[g_{k_{2}}(\hat L)XW\bigr]^{\!T}
+    = \bigl[g_{k_{2}}(\hat L)XW\bigr]^{'T}
     \bigl[g_{k_{1}}(\hat L)XW\bigr].$，因为 $W$ 只是一层线性映射，把它合并进 $X$，记 $X' = XW$。于是变成
     $\boxed{\displaystyle
     \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
-    = X'^{\!T} g_{k_{2}}(\hat L)^{\!T} g_{k_{1}}(\hat L)\,X' } .$,由于 $g_{k}(\hat L)$ 是对称矩阵（多项式函数的对称拉普拉斯），$g_{k}^{\!T}=g_{k}$，于是$\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
-    = X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)\,X' .$
+    = X'^{'T} g_{k_{2}}(\hat L)^{'T} g_{k_{1}}(\hat L)\,X' } .$,由于 $g_{k}(\hat L)$ 是对称矩阵（多项式函数的对称拉普拉斯），$g_{k}^{'T}=g_{k}$，于是$\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
+    = X'^{'T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)\,X' .$
     - 对拉普拉斯矩阵做特征分解  
-    $\hat L = U\Lambda U^{\!T},\qquad
+    $\hat L = U\Lambda U^{'T},\qquad
     \Lambda = \operatorname{diag}(\lambda_{1},\dots,\lambda_{n}),$则
-    $g_{k}(\hat L) = U\,g_{k}(\Lambda)\,U^{\!T},\qquad g_{k}(\Lambda)=\operatorname{diag}\bigl(g_{k}(\lambda_{1}),\dots,g_{k}(\lambda_{n})\bigr).$把 $X'$ 投到谱域：$\tilde X = U^{\!T}XW$。于是$X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)X'
-    = (U\tilde X)^{\!T}U g_{k_{2}}(\Lambda)U^{\!T}
-                        U g_{k_{1}}(\Lambda)U^{\!T}U\tilde X
-    = \tilde X^{\!T} g_{k_{2}}(\Lambda) g_{k_{1}}(\Lambda)\tilde X .$ 因为 $\Lambda$ 是对角的，乘法只在对应的特征值上进行标量相乘，得到
+    $g_{k}(\hat L) = U\,g_{k}(\Lambda)\,U^{'T},\qquad g_{k}(\Lambda)=\operatorname{diag}\bigl(g_{k}(\lambda_{1}),\dots,g_{k}(\lambda_{n})\bigr).$把 $X'$ 投到谱域：$\tilde X = U^{'T}XW$。于是$X'^{'T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)X'
+    = (U\tilde X)^{'T}U g_{k_{2}}(\Lambda)U^{'T}
+                        U g_{k_{1}}(\Lambda)U^{'T}U\tilde X
+    = \tilde X^{'T} g_{k_{2}}(\Lambda) g_{k_{1}}(\Lambda)\tilde X .$ 因为 $\Lambda$ 是对角的，乘法只在对应的特征值上进行标量相乘，得到
     $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
     = \sum_{i=1}^{n} g_{k_{2}}(\lambda_{i})\,g_{k_{1}}(\lambda_{i})\,
-    \bigl(\tilde X_{\lambda_{i}}\bigr)^{2}.$这里 $\tilde X_{\lambda_{i}}$ 是第 $i$ 个频率的 **谱系数**（即 $U^{\!T}XW$ 的第 $i$ 行），记作 $\tilde X_{\lambda_{i}}$。
+    \bigl(\tilde X_{\lambda_{i}}\bigr)^{2}.$这里 $\tilde X_{\lambda_{i}}$ 是第 $i$ 个频率的 **谱系数**（即 $U^{'T}XW$ 的第 $i$ 行），记作 $\tilde X_{\lambda_{i}}$。
     - 把离散求和视作 **Riemann 求和**: 定义累计幅度函数 
     $F(\lambda) = \sum_{\lambda_{i}\le \lambda}\tilde X_{\lambda_{i}}^{2},$它在每个特征值 $\lambda_{i}$ 处跳跃 $\tilde X_{\lambda_{i}}^{2}$。于是
     $\tilde X_{\lambda_{i}}^{2}
