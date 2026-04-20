@@ -448,10 +448,11 @@ async function renderMarkdown(main, meta) {
     const res = await fetch(meta.file);
     if (!res.ok) throw new Error('File not found');
     // 把 \textcolor{color}{文字} 转成 <span style="color:...">
+    text = await res.text();
     text = text.replace(/\\textcolor\{([^}]+)\}\{([^}]+)\}/g, 
       (_, color, content) => `<span style="color:${color}">${content}</span>`
     );
-    const text = await res.text();
+    // const text = await res.text();
     // const html = marked.parse(text);
     const basePath = meta.file.substring(0, meta.file.lastIndexOf('/') + 1);
     const html = marked.parse(text.replace(
