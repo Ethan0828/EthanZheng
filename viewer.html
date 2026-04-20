@@ -597,7 +597,14 @@ async function renderMarkdown(main, meta) {
 
   // MathJax 独立调用，错误不影响文章渲染
   try {
-    await MathJax.typesetPromise([document.getElementById('mdContent')]);
+    // await MathJax.typesetPromise([document.getElementById('mdContent')]);
+    console.log('1. 开始等待 MathJax 初始化');
+    await window.MathJax.startup.promise;
+    console.log('2. MathJax 初始化完成，开始渲染公式');
+    const el = document.getElementById('mdContent');
+    console.log('3. mdContent 内容片段:', el.innerHTML.substring(0, 200));
+    await MathJax.typesetPromise([el]);
+    console.log('4. 公式渲染完成');
   } catch(e) {
     console.error('MathJax error:', e);
   }
