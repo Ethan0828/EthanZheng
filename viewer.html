@@ -475,12 +475,25 @@ async function renderMarkdown(main, meta) {
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     hljs.highlightAll();
     // MathJax.typesetPromise();
-    if (window.MathJax && MathJax.typesetPromise) {
-      await MathJax.typesetPromise([document.getElementById('mdContent')]);
-    } else {
-      // MathJax 还没加载完，等待后重试
-      setTimeout(() => MathJax.typesetPromise([document.getElementById('mdContent')]), 1000);
-    }
+    // if (window.MathJax && MathJax.typesetPromise) {
+    //   await MathJax.typesetPromise([document.getElementById('mdContent')]);
+    // } else {
+    //   // MathJax 还没加载完，等待后重试
+    //   setTimeout(() => MathJax.typesetPromise([document.getElementById('mdContent')]), 1000);
+    // }
+    const waitForMathJax = () => new Promise(resolve => {
+      const check = () => {
+        if (window.MathJax && MathJax.typesetPromise) {
+          resolve();
+        } else {
+          setTimeout(check, 100);
+        }
+      };
+      check();
+    });
+    
+    await waitForMathJax();
+    await MathJax.typesetPromise([document.getElementById('mdContent')]);
     document.getElementById('mdContent').innerHTML = html;
     hljs.highlightAll();
     MathJax.typesetPromise(); // MathJax 渲染公式
