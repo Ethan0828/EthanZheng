@@ -1,32 +1,18 @@
 [
   {
-    "id": "spectral-gnn-intro",
-    "title": "Introduction to Spectral Graph Neural Networks",
-    "file": "articles/spectral-gnn-intro.md",
-    "type": "md",
-    "date": "2026-03-15",
-    "tags": ["GNN", "spectral", "deep learning", "graph theory"],
-    "keywords": ["ChebNet", "graph Laplacian", "polynomial filter", "eigenvalue", "BernNet", "GPR-GNN"],
-    "excerpt": "An overview of spectral-domain approaches to graph neural networks, covering the transition from graph signal processing to learnable polynomial filters."
-  },
-  {
-    "id": "clash-framework",
-    "title": "CLASH: Cross-Relation Adaptive Spectral Heterogeneous GNN",
-    "file": "articles/clash-framework.pdf",
-    "type": "pdf",
-    "date": "2026-04-01",
-    "tags": ["GNN", "heterogeneous graph", "spectral", "NeurIPS"],
-    "keywords": ["CLASH", "eigenvalue correction", "heterogeneous graph", "node-adaptive", "binomial theorem"],
-    "excerpt": "A spectral GNN framework for heterogeneous graphs using node-adaptive eigenvalue perturbation, analytically equivalent to polynomial coefficient transformation via the binomial theorem."
-  },
-  {
-    "id": "graphllm-robustness",
-    "title": "GraphLLM Robustness Under Noisy Graph Data",
-    "file": "articles/graphllm-robustness.md",
-    "type": "md",
-    "date": "2026-02-20",
-    "tags": ["LLM", "GNN", "robustness", "ICDE"],
-    "keywords": ["GraphLLM", "text-structure consistency", "noisy graph", "anomaly detection", "heterophily"],
-    "excerpt": "Exploring the robustness of LLM-enhanced GNNs when graph structure and text attributes are noisy, with a unified scoring mechanism based on text-structure semantic consistency."
-  }
+  "id": "how-powerful-are-spectral-graph-neural-networks",
+  "title": "How Powerful are Spectral Graph Neural Networks",
+  "file": "articles/How Powerful are Spectral Graph Neural Networks.pdf",
+  "type": "pdf",
+  "date": "2026-04-20",
+  "tags": [
+    "Spectral GNNs",
+    "Jacobi Basis"
+  ],
+  "keywords": [
+    "spectral GNNs",
+    "JacobiConv"
+  ],
+  "excerpt": "暂无摘要"
+}
 ]
