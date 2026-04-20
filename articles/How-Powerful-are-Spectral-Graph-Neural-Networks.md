@@ -112,89 +112,55 @@
     - 目标是求 $\partial^{2}R/(\partial\alpha_{k_{1}}\partial\alpha_{k_{2}})$，即 **Hessian 矩阵** $H$ 的元素。
     - 把 $R$ 看成 $\alpha$ 的二次函数，固定其他参数（$W$）不变。记 $
     \Phi(\alpha) = \sum_{k}\alpha_{k}\,g_{k}(\hat L)XW .
-    $则$
-    R = \tfrac12\|\Phi(\alpha)-Y\|_{F}^{2}.
-    $，对 $\alpha_{k_{1}}$ 求梯度：$
-    \frac{\partial R}{\partial\alpha_{k_{1}}}
-    = \bigl(\Phi(\alpha)-Y\bigr)^{\!T}
-        \frac{\partial\Phi}{\partial\alpha_{k_{1}}}
-    = \bigl(\Phi(\alpha)-Y\bigr)^{\!T}
-        g_{k_{1}}(\hat L)XW .
-    $，再对 $\alpha_{k_{2}}$ 求导，得到 Hessian 元素
-    $
+    $则$R = \tfrac12\|\Phi(\alpha)-Y\|_{F}^{2}.
+    $，对 $\alpha_{k_{1}}$ 求梯度：$\frac{\partial R}{\partial\alpha_{k_{1}}}
+    = \bigl(\Phi(\alpha)-Y\bigr)^{\!T}\frac{\partial\Phi}{\partial\alpha_{k_{1}}}
+    = \bigl(\Phi(\alpha)-Y\bigr)^{\!T}g_{k_{1}}(\hat L)XW.$，再对 $\alpha_{k_{2}}$ 求导，得到 Hessian 元素
+    $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}= \bigl[g_{k_{2}}(\hat L)XW\bigr]^{\!T}
+    \bigl[g_{k_{1}}(\hat L)XW\bigr].$，因为 $W$ 只是一层线性映射，把它合并进 $X$，记 $X' = XW$。于是变成
+    $\boxed{\displaystyle
     \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
-    = \bigl[g_{k_{2}}(\hat L)XW\bigr]^{\!T}
-    \bigl[g_{k_{1}}(\hat L)XW\bigr].
-    $，因为 $W$ 只是一层线性映射，把它合并进 $X$，记 $X' = XW$。于是变成
-    $
-    \boxed{\displaystyle
-    \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
-    = X'^{\!T} g_{k_{2}}(\hat L)^{\!T} g_{k_{1}}(\hat L)\,X' } .
-    $,由于 $g_{k}(\hat L)$ 是对称矩阵（多项式函数的对称拉普拉斯），$g_{k}^{\!T}=g_{k}$，于是
-    $
-    \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
-    = X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)\,X' .
-    $
+    = X'^{\!T} g_{k_{2}}(\hat L)^{\!T} g_{k_{1}}(\hat L)\,X' } .$,由于 $g_{k}(\hat L)$ 是对称矩阵（多项式函数的对称拉普拉斯），$g_{k}^{\!T}=g_{k}$，于是
+    $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
+    = X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)\,X' .$
     - 对拉普拉斯矩阵做特征分解  
-    $
-    \hat L = U\Lambda U^{\!T},\qquad
-    \Lambda = \operatorname{diag}(\lambda_{1},\dots,\lambda_{n}),
-    $则
-    $
-    g_{k}(\hat L) = U\,g_{k}(\Lambda)\,U^{\!T},
+    $\hat L = U\Lambda U^{\!T},\qquad
+    \Lambda = \operatorname{diag}(\lambda_{1},\dots,\lambda_{n}),$则
+    $g_{k}(\hat L) = U\,g_{k}(\Lambda)\,U^{\!T},
     \qquad
-    g_{k}(\Lambda)=\operatorname{diag}\bigl(g_{k}(\lambda_{1}),\dots,g_{k}(\lambda_{n})\bigr).
-    $把 $X'$ 投到谱域：$\tilde X = U^{\!T}XW$。于是
-    $
-    X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)X'
+    g_{k}(\Lambda)=\operatorname{diag}\bigl(g_{k}(\lambda_{1}),\dots,g_{k}(\lambda_{n})\bigr).$把 $X'$ 投到谱域：$\tilde X = U^{\!T}XW$。于是
+    $X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)X'
     = (U\tilde X)^{\!T}U g_{k_{2}}(\Lambda)U^{\!T}
                         U g_{k_{1}}(\Lambda)U^{\!T}U\tilde X
-    = \tilde X^{\!T} g_{k_{2}}(\Lambda) g_{k_{1}}(\Lambda)\tilde X .
-    $ 因为 $\Lambda$ 是对角的，乘法只在对应的特征值上进行标量相乘，得到
-    $
-    \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
+    = \tilde X^{\!T} g_{k_{2}}(\Lambda) g_{k_{1}}(\Lambda)\tilde X .$ 因为 $\Lambda$ 是对角的，乘法只在对应的特征值上进行标量相乘，得到
+    $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
     = \sum_{i=1}^{n} g_{k_{2}}(\lambda_{i})\,g_{k_{1}}(\lambda_{i})\,
-    \bigl(\tilde X_{\lambda_{i}}\bigr)^{2}.
-    $这里 $\tilde X_{\lambda_{i}}$ 是第 $i$ 个频率的 **谱系数**（即 $U^{\!T}XW$ 的第 $i$ 行），记作 $\tilde X_{\lambda_{i}}$。
+    \bigl(\tilde X_{\lambda_{i}}\bigr)^{2}.$这里 $\tilde X_{\lambda_{i}}$ 是第 $i$ 个频率的 **谱系数**（即 $U^{\!T}XW$ 的第 $i$ 行），记作 $\tilde X_{\lambda_{i}}$。
     - 把离散求和视作 **Riemann 求和**: 定义累计幅度函数 
-    $
-    F(\lambda) = \sum_{\lambda_{i}\le \lambda}\tilde X_{\lambda_{i}}^{2},
-    $它在每个特征值 $\lambda_{i}$ 处跳跃 $\tilde X_{\lambda_{i}}^{2}$。于是
-    $
-    \tilde X_{\lambda_{i}}^{2}
-    = F(\lambda_{i})-F(\lambda_{i-1}),
-    $其中 $\lambda_{0}$ 设为 0，$\lambda_{n+1}$ 设为 2（归一化拉普拉斯的最大特征值）。则有：
-    $
-    \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
+    $F(\lambda) = \sum_{\lambda_{i}\le \lambda}\tilde X_{\lambda_{i}}^{2},$它在每个特征值 $\lambda_{i}$ 处跳跃 $\tilde X_{\lambda_{i}}^{2}$。于是
+    $\tilde X_{\lambda_{i}}^{2}
+    = F(\lambda_{i})-F(\lambda_{i-1}),$其中 $\lambda_{0}$ 设为 0，$\lambda_{n+1}$ 设为 2（归一化拉普拉斯的最大特征值）。则有：
+    $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
     = \sum_{i=1}^{n}
     g_{k_{2}}(\lambda_{i})\,g_{k_{1}}(\lambda_{i})\,
-    \bigl[F(\lambda_{i})-F(\lambda_{i-1})\bigr].
-    $把每一项乘以 $\dfrac{\lambda_{i}-\lambda_{i-1}}{\lambda_{i}-\lambda_{i-1}}$（即 1），得到
-    $
-    \frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
+    \bigl[F(\lambda_{i})-F(\lambda_{i-1})\bigr].$把每一项乘以 $\dfrac{\lambda_{i}-\lambda_{i-1}}{\lambda_{i}-\lambda_{i-1}}$（即 1），得到
+    $\frac{\partial^{2}R}{\partial\alpha_{k_{1}}\partial\alpha_{k_{2}}}
     = \sum_{i=1}^{n}
     g_{k_{2}}(\lambda_{i})\,g_{k_{1}}(\lambda_{i})\,
     \frac{F(\lambda_{i})-F(\lambda_{i-1})}{\lambda_{i}-\lambda_{i-1}}
-    \;(\lambda_{i}-\lambda_{i-1}),
-    $这正是 **Riemann 求和** 的形式。括号里的分数是 **频率 $\lambda$ 上的信号密度**，记为  
-    $
-    f(\lambda) = \frac{\Delta F(\lambda)}{\Delta \lambda}
-                = \frac{F(\lambda_{i})-F(\lambda_{i-1})}{\lambda_{i}-\lambda_{i-1}}.
-    $当图的节点数趋向无穷大，特征值 $\{\lambda_{i}\}$ 在区间 $[0,2]$ 上变得 **稠密**，Riemann 求和收敛到 **定积分**：
-    $
-    \boxed{\displaystyle
+    \;(\lambda_{i}-\lambda_{i-1}),$这正是 **Riemann 求和** 的形式。括号里的分数是 **频率 $\lambda$ 上的信号密度**，记为  
+    $f(\lambda) = \frac{\Delta F(\lambda)}{\Delta \lambda}
+                = \frac{F(\lambda_{i})-F(\lambda_{i-1})}{\lambda_{i}-\lambda_{i-1}}.$当图的节点数趋向无穷大，特征值 $\{\lambda_{i}\}$ 在区间 $[0,2]$ 上变得 **稠密**，Riemann 求和收敛到 **定积分**：
+    $\boxed{\displaystyle
     H_{k_{1}k_{2}}
     = \int_{0}^{2} g_{k_{1}}(\lambda)\,g_{k_{2}}(\lambda)\,f(\lambda)\,d\lambda .
-    }
-    $这里的 **权函数** $f(\lambda)$ 正是 **图信号在频率 $\lambda$ 处的密度**，它由节点特征的谱系数决定。
+    }$这里的 **权函数** $f(\lambda)$ 正是 **图信号在频率 $\lambda$ 处的密度**，它由节点特征的谱系数决定。
     - 最小化条件数 $\kappa(H)$,Hessian 矩阵 $H$ 的 **条件数** $\kappa(H)$ 衡量它的“可逆性”。如果 $H$ 是 **单位矩阵**（所有特征值均为 1），则 $\kappa(H)=1$，是最小可能值。$H$ 为单位矩阵当且仅当多项式空间为正交空间
-    $
-    \left \langle h,g\right \rangle = \int_{0}^{2} g_{k_{1}}(\lambda)g_{k_{2}}(\lambda)f(\lambda)\,d\lambda
+    $\left \langle h,g\right \rangle = \int_{0}^{2} g_{k_{1}}(\lambda)g_{k_{2}}(\lambda)f(\lambda)\,d\lambda
     = \begin{cases}
     1 & k_{1}=k_{2}\\
     0 & k_{1}\neq k_{2}
-    \end{cases}
-    $此时得到最小的条件数，梯度在所有方向上同样陡峭，学习率可以取到 ($\eta=1$)（或更大），理论上一次更新就能直接到达最优点,即最快的收敛速度。
+    \end{cases}$此时得到最小的条件数，梯度在所有方向上同样陡峭，学习率可以取到 ($\eta=1$)（或更大），理论上一次更新就能直接到达最优点,即最快的收敛速度。
 5. 结论：尽管所有完备的多项式基都拥有相同的表达能力，但是使用正交基+图信号密度作为权重函数可以实现最快的收敛速度
     - 特征值已知的情况下，可以使用 Gram-Schmidt 过程构建正交基
     - 为了避免特征值分解的计算成本，使用更灵活的方式——Jacobi 多项式基
