@@ -15,11 +15,26 @@
   <!-- <link rel="stylesheet" href="libs/katex.min.css" />
   -->
   <script>
+  // MathJax = {
+  //   tex: {
+  //     inlineMath: [['$', '$'], ['\\(', '\\)']],
+  //     displayMath: [['$$', '$$'], ['\\[', '\\]']],
+  //     processEscapes: true
+  //   },
+  //   options: {
+  //     skipHtmlTags: ['script','noscript','style','textarea','pre']
+  //   }
+  // };
   MathJax = {
+    chtml: {
+      fontURL: 'https://unpkg.com/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2'
+    },
+    loader: { load: [] },
     tex: {
       inlineMath: [['$', '$'], ['\\(', '\\)']],
       displayMath: [['$$', '$$'], ['\\[', '\\]']],
-      processEscapes: true
+      processEscapes: true,
+      packages: {'[-]': ['color']}
     },
     options: {
       skipHtmlTags: ['script','noscript','style','textarea','pre']
