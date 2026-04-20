@@ -413,7 +413,12 @@ async function renderMarkdown(main, meta) {
     const res = await fetch(meta.file);
     if (!res.ok) throw new Error('File not found');
     const text = await res.text();
-    const html = marked.parse(text);
+    // const html = marked.parse(text);
+    const basePath = meta.file.substring(0, meta.file.lastIndexOf('/') + 1);
+    const html = marked.parse(text.replace(
+      /!\[([^\]]*)\]\((?!http)([^)]+)\)/g,
+      (_, alt, src) => `![${alt}](${basePath}${src})`
+    ));
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     buildTOC();
     hljs.highlightAll();
