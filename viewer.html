@@ -117,12 +117,19 @@
     }
 
     /* ── Article layout ── */
-    .article-wrap {
+    /* .article-wrap {
       position: relative;
       z-index: 1;
       max-width: 900px;
       margin: 0 auto;
       padding: 48px 24px 80px;
+    } */
+    .article-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 240px 80px 24px; /* 右侧加 240px 给 TOC 让位 */
     }
 
     /* ── Article header ── */
@@ -364,6 +371,12 @@
 
     @media (max-width: 640px) {
       .article-title { font-size: 1.8rem; }
+    }
+    @media (max-width: 1200px) {
+      .toc-aside { display: none; }
+      .article-wrap {
+        padding: 48px 24px 80px 24px; /* 小屏恢复对称 padding */
+      }
     }
   </style>
 </head>
