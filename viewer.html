@@ -422,22 +422,43 @@ async function renderMarkdown(main, meta) {
     const text = await res.text();
     // const html = marked.parse(text);
     const basePath = meta.file.substring(0, meta.file.lastIndexOf('/') + 1);
-    const html = marked.parse(text.replace(
+
+    // 1. 提取并保护 LaTeX，避免被 marked 转义
+    const mathBlocks = [];
+    let protected_text = text
+      .replace(/\$\$([\s\S]+?)\$\$/g, (_, math) => {
+        mathBlocks.push({ type: 'block', math });
+        return `@@MATH_BLOCK_${mathBlocks.length - 1}@@`;
+      })
+      .replace(/\$([^\n$]+?)\$/g, (_, math) => {
+        mathBlocks.push({ type: 'inline', math });
+        return `@@MATH_INLINE_${mathBlocks.length - 1}@@`;
+      });
+    
+    // 2. 修正图片路径
+    protected_text = protected_text.replace(
       /!\[([^\]]*)\]\((?!http)([^)]+)\)/g,
       (_, alt, src) => `![${alt}](${basePath}${src})`
-    ));
+    );
+    
+    // 3. Markdown 渲染
+    let html = marked.parse(protected_text);
+    
+    // 4. 还原 LaTeX 并用 KaTeX 渲染
+    html = html
+      .replace(/@@MATH_BLOCK_(\d+)@@/g, (_, i) => {
+        try {
+          return katex.renderToString(mathBlocks[i].math, { displayMode: true, throwOnError: false });
+        } catch { return mathBlocks[i].math; }
+      })
+      .replace(/@@MATH_INLINE_(\d+)@@/g, (_, i) => {
+        try {
+          return katex.renderToString(mathBlocks[i].math, { displayMode: false, throwOnError: false });
+        } catch { return mathBlocks[i].math; }
+      });
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     buildTOC();
     hljs.highlightAll();
-    renderMathInElement(document.getElementById('mdContent'), {
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\[', right: '\\]', display: true },
-        { left: '\\(', right: '\\)', display: false }
-      ],
-      throwOnError: false
-    });
   } catch {
     main.innerHTML = renderHeader(meta) + `
       <div class="md-content">
