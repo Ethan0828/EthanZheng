@@ -125,9 +125,7 @@
     - 对拉普拉斯矩阵做特征分解  
     $\hat L = U\Lambda U^{\!T},\qquad
     \Lambda = \operatorname{diag}(\lambda_{1},\dots,\lambda_{n}),$则
-    $g_{k}(\hat L) = U\,g_{k}(\Lambda)\,U^{\!T},
-    \qquad
-    g_{k}(\Lambda)=\operatorname{diag}\bigl(g_{k}(\lambda_{1}),\dots,g_{k}(\lambda_{n})\bigr).$把 $X'$ 投到谱域：$\tilde X = U^{\!T}XW$。于是$X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)X'
+    $g_{k}(\hat L) = U\,g_{k}(\Lambda)\,U^{\!T},\qquad g_{k}(\Lambda)=\operatorname{diag}\bigl(g_{k}(\lambda_{1}),\dots,g_{k}(\lambda_{n})\bigr).$把 $X'$ 投到谱域：$\tilde X = U^{\!T}XW$。于是$X'^{\!T} g_{k_{2}}(\hat L) g_{k_{1}}(\hat L)X'
     = (U\tilde X)^{\!T}U g_{k_{2}}(\Lambda)U^{\!T}
                         U g_{k_{1}}(\Lambda)U^{\!T}U\tilde X
     = \tilde X^{\!T} g_{k_{2}}(\Lambda) g_{k_{1}}(\Lambda)\tilde X .$ 因为 $\Lambda$ 是对角的，乘法只在对应的特征值上进行标量相乘，得到
