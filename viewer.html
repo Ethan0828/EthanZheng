@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="libs/github-dark.min.css" />
   <script src="libs/marked.min.js"></script>
   <script src="libs/highlight.min.js"></script>
+  <link rel="stylesheet" href="libs/katex.min.css" />
+  <script src="libs/katex.min.js"></script>
+  <script src="libs/auto-render.min.js"></script>
   
   <style>
     :root {
@@ -426,6 +429,15 @@ async function renderMarkdown(main, meta) {
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     buildTOC();
     hljs.highlightAll();
+    renderMathInElement(document.getElementById('mdContent'), {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false },
+        { left: '\\[', right: '\\]', display: true },
+        { left: '\\(', right: '\\)', display: false }
+      ],
+      throwOnError: false
+    });
   } catch {
     main.innerHTML = renderHeader(meta) + `
       <div class="md-content">
