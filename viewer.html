@@ -463,60 +463,104 @@ function renderHeader(meta) {
   `;
 }
 
+// async function renderMarkdown(main, meta) {
+//   try {
+//     const res = await fetch(meta.file);
+//     if (!res.ok) throw new Error('File not found');
+//     // 把 \textcolor{color}{文字} 转成 <span style="color:...">
+//     text = await res.text();
+//     text = text.replace(/\\textcolor\{([^}]+)\}\{([^}]+)\}/g, 
+//       (_, color, content) => `<span style="color:${color}">${content}</span>`
+//     );
+//     // const text = await res.text();
+//     // const html = marked.parse(text);
+//     const basePath = meta.file.substring(0, meta.file.lastIndexOf('/') + 1);
+//     const html = marked.parse(text.replace(
+//       /!\[([^\]]*)\]\((?!http)([^)]+)\)/g,
+//       (_, alt, src) => `![${alt}](${basePath}${src})`
+//     ));
+//     // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
+//     // hljs.highlightAll();
+//     // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
+//     // hljs.highlightAll();
+    
+//     // // 等待 MathJax 自身的启动 Promise
+//     // window.MathJax.startup.promise.then(() => {
+//     //   MathJax.typesetPromise([document.getElementById('mdContent')]);
+//     // });
+//     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
+//     hljs.highlightAll();
+//     await MathJax.typesetPromise([document.getElementById('mdContent')]);
+//     // MathJax.typesetPromise();
+//     // if (window.MathJax && MathJax.typesetPromise) {
+//     //   await MathJax.typesetPromise([document.getElementById('mdContent')]);
+//     // } else {
+//     //   // MathJax 还没加载完，等待后重试
+//     //   setTimeout(() => MathJax.typesetPromise([document.getElementById('mdContent')]), 1000);
+//     // }
+//     const waitForMathJax = () => new Promise(resolve => {
+//       const check = () => {
+//         if (window.MathJax && MathJax.typesetPromise) {
+//           resolve();
+//         } else {
+//           setTimeout(check, 100);
+//         }
+//       };
+//       check();
+//     });
+    
+//     await waitForMathJax();
+//     await MathJax.typesetPromise([document.getElementById('mdContent')]);
+//     document.getElementById('mdContent').innerHTML = html;
+//     hljs.highlightAll();
+//     MathJax.typesetPromise(); // MathJax 渲染公式
+//     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
+//     buildTOC();
+//     hljs.highlightAll();
+//   } catch(e) {
+//     console.error('renderMarkdown error:', e);
+//     main.innerHTML = renderHeader(meta) + `
+//       <div class="md-content">
+//         <blockquote>
+//           <strong>文件未找到</strong>：请确保 <code>${meta.file}</code> 文件已上传到仓库的对应目录。
+//         </blockquote>
+//         <p>将你的 Markdown 文件放入仓库后，这里会自动渲染全文内容。</p>
+//         <h2>文章关键词</h2>
+//         <ul>${meta.keywords.map(k => `<li>${k}</li>`).join('')}</ul>
+//       </div>`;
+//   }
+// }
+
 async function renderMarkdown(main, meta) {
   try {
     const res = await fetch(meta.file);
     if (!res.ok) throw new Error('File not found');
-    // 把 \textcolor{color}{文字} 转成 <span style="color:...">
-    text = await res.text();
-    text = text.replace(/\\textcolor\{([^}]+)\}\{([^}]+)\}/g, 
+
+    let text = await res.text();
+
+    // 处理 \textcolor
+    text = text.replace(/\\textcolor\{([^}]+)\}\{([^}]+)\}/g,
       (_, color, content) => `<span style="color:${color}">${content}</span>`
     );
-    // const text = await res.text();
-    // const html = marked.parse(text);
+
+    // 修正图片路径
     const basePath = meta.file.substring(0, meta.file.lastIndexOf('/') + 1);
-    const html = marked.parse(text.replace(
+    text = text.replace(
       /!\[([^\]]*)\]\((?!http)([^)]+)\)/g,
       (_, alt, src) => `![${alt}](${basePath}${src})`
-    ));
-    // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
-    // hljs.highlightAll();
-    // main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
-    // hljs.highlightAll();
-    
-    // // 等待 MathJax 自身的启动 Promise
-    // window.MathJax.startup.promise.then(() => {
-    //   MathJax.typesetPromise([document.getElementById('mdContent')]);
-    // });
-    main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
-    hljs.highlightAll();
-    await MathJax.typesetPromise([document.getElementById('mdContent')]);
-    // MathJax.typesetPromise();
-    // if (window.MathJax && MathJax.typesetPromise) {
-    //   await MathJax.typesetPromise([document.getElementById('mdContent')]);
-    // } else {
-    //   // MathJax 还没加载完，等待后重试
-    //   setTimeout(() => MathJax.typesetPromise([document.getElementById('mdContent')]), 1000);
-    // }
-    const waitForMathJax = () => new Promise(resolve => {
-      const check = () => {
-        if (window.MathJax && MathJax.typesetPromise) {
-          resolve();
-        } else {
-          setTimeout(check, 100);
-        }
-      };
-      check();
-    });
-    
-    await waitForMathJax();
-    await MathJax.typesetPromise([document.getElementById('mdContent')]);
-    document.getElementById('mdContent').innerHTML = html;
-    hljs.highlightAll();
-    MathJax.typesetPromise(); // MathJax 渲染公式
+    );
+
+    const html = marked.parse(text);
+
+    // 写入页面
     main.innerHTML = renderHeader(meta) + `<div class="md-content" id="mdContent">${html}</div>`;
     buildTOC();
     hljs.highlightAll();
+
+    // 等待 MathJax 就绪后渲染
+    await window.MathJax.startup.promise;
+    await MathJax.typesetPromise([document.getElementById('mdContent')]);
+
   } catch(e) {
     console.error('renderMarkdown error:', e);
     main.innerHTML = renderHeader(meta) + `
@@ -524,12 +568,11 @@ async function renderMarkdown(main, meta) {
         <blockquote>
           <strong>文件未找到</strong>：请确保 <code>${meta.file}</code> 文件已上传到仓库的对应目录。
         </blockquote>
-        <p>将你的 Markdown 文件放入仓库后，这里会自动渲染全文内容。</p>
         <h2>文章关键词</h2>
         <ul>${meta.keywords.map(k => `<li>${k}</li>`).join('')}</ul>
       </div>`;
   }
-}
+}  
 
 function renderPdf(main, meta) {
   main.innerHTML = renderHeader(meta) + `
