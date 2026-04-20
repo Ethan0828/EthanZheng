@@ -552,12 +552,21 @@ async function renderMarkdown(main, meta) {
 
     // 保护数学公式不被 marked 破坏
     const mathCache = [];
+    // let protected_text = text
+    //   .replace(/\$\$([\s\S]+?)\$\$/g, (_, math) => {
+    //     mathCache.push({ display: true, math });
+    //     return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
+    //   })
+    //   .replace(/\$([^\n$]+?)\$/g, (_, math) => {
+    //     mathCache.push({ display: false, math });
+    //     return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
+    //   });
     let protected_text = text
       .replace(/\$\$([\s\S]+?)\$\$/g, (_, math) => {
         mathCache.push({ display: true, math });
         return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
       })
-      .replace(/\$([^\n$]+?)\$/g, (_, math) => {
+      .replace(/\$([^$]+?)\$/gs, (_, math) => {
         mathCache.push({ display: false, math });
         return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
       });
