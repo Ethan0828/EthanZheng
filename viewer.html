@@ -550,8 +550,7 @@ async function renderMarkdown(main, meta) {
       (_, alt, src) => `![${alt}](${basePath}${src})`
     );
 
-    // const html = marked.parse(text);
-    // 1. 保护数学公式不被 marked 破坏
+    // 保护数学公式不被 marked 破坏
     const mathCache = [];
     let protected_text = text
       .replace(/\$\$([\s\S]+?)\$\$/g, (_, math) => {
@@ -562,11 +561,11 @@ async function renderMarkdown(main, meta) {
         mathCache.push({ display: false, math });
         return `<span class="math-placeholder" data-index="${mathCache.length - 1}"></span>`;
       });
-    
-    // 2. Markdown 渲染
+
+    // Markdown 渲染
     let html = marked.parse(protected_text);
-    
-    // 3. 还原公式占位符
+
+    // 还原公式占位符
     html = html.replace(
       /<span class="math-placeholder" data-index="(\d+)"><\/span>/g,
       (_, i) => {
@@ -580,22 +579,29 @@ async function renderMarkdown(main, meta) {
     buildTOC();
     hljs.highlightAll();
 
-    // 等待 MathJax 就绪后渲染
-    await window.MathJax.startup.promise;
-    await MathJax.typesetPromise([document.getElementById('mdContent')]);
-
   } catch(e) {
-    console.error('renderMarkdown error:', e);
-    main.innerHTML = renderHeader(meta) + `
-      <div class="md-content">
-        <blockquote>
-          <strong>文件未找到</strong>：请确保 <code>${meta.file}</code> 文件已上传到仓库的对应目录。
-        </blockquote>
-        <h2>文章关键词</h2>
-        <ul>${meta.keywords.map(k => `<li>${k}</li>`).join('')}</ul>
-      </div>`;
+    if (e.message === 'File not found') {
+      main.innerHTML = renderHeader(meta) + `
+        <div class="md-content">
+          <blockquote>
+            <strong>文件未找到</strong>：请确保 <code>${meta.file}</code> 已上传到仓库。
+          </blockquote>
+          <h2>文章关键词</h2>
+          <ul>${meta.keywords.map(k => `<li>${k}</li>`).join('')}</ul>
+        </div>`;
+    } else {
+      console.error('renderMarkdown error:', e);
+    }
+    return;
   }
-}  
+
+  // MathJax 独立调用，错误不影响文章渲染
+  try {
+    await MathJax.typesetPromise([document.getElementById('mdContent')]);
+  } catch(e) {
+    console.error('MathJax error:', e);
+  }
+}
 
 function renderPdf(main, meta) {
   main.innerHTML = renderHeader(meta) + `
