@@ -539,7 +539,7 @@ async function renderMarkdown(main, meta) {
     let text = await res.text();
 
     // 处理 \textcolor
-    text = text.replace(/\\textcolor\{([^}]+)\}\{([^}]+)\}/g,
+    text = text.replace(/\$\\textcolor\{([^}]+)\}\{([^}]+)\}\$/g,
       (_, color, content) => `<span style="color:${color}">${content}</span>`
     );
 
