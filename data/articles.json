@@ -2,8 +2,8 @@
   {
   "id": "how-powerful-are-spectral-graph-neural-networks",
   "title": "How Powerful are Spectral Graph Neural Networks",
-  "file": "articles/How Powerful are Spectral Graph Neural Networks.pdf",
-  "type": "pdf",
+  "file": "articles/How Powerful are Spectral Graph Neural Networks.md",
+  "type": "md",
   "date": "2026-04-20",
   "tags": [
     "Spectral GNNs",
