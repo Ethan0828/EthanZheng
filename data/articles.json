@@ -14,4 +14,14 @@
   ],
   "excerpt": "暂无摘要"
   }
+  {
+  "id": "adaspec-adaptive-spectrum-for-enhanced-node-distinguishability",
+  "title": "AdaSpec_Adaptive_Spectrum_for_Enhanced_Node_Distinguishability",
+  "file": "articles/AdaSpec_Adaptive_Spectrum_for_Enhanced_Node_Distinguishability.md",
+  "type": "md",
+  "date": "2026-05-12",
+  "tags": ["Spectral GNNs"],
+  "keywords": ["Spectral GNNs", "Eigenvalue Multiplicity","Frequency Component"],
+  "excerpt": "设计了三个模块，首先给设计一个可学习的偏置矩阵解决特征值重复的问题，然后基于此将整个特征值的分布整体平移，以减少特征值为0的部分对图信号的抑制，而后通过将特征矩阵中的信息引入到邻接矩阵中，将特征和拓扑进行对齐"
+  }
 ]
