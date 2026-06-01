@@ -23,5 +23,15 @@
   "tags": ["Spectral GNNs"],
   "keywords": ["Spectral GNNs", "Eigenvalue Multiplicity","Frequency Component"],
   "excerpt": "设计了三个模块，首先给设计一个可学习的偏置矩阵解决特征值重复的问题，然后基于此将整个特征值的分布整体平移，以减少特征值为0的部分对图信号的抑制，而后通过将特征矩阵中的信息引入到邻接矩阵中，将特征和拓扑进行对齐"
+  },
+  {
+  "id": "graph_neural_networks_with_diverse_spectral_filtering",
+  "title": "Graph Neural Networks with Diverse Spectral Filtering",
+  "file": "articles/Graph-Neural-Networks-with-Diverse-Spectral-Filtering.md",
+  "type": "md",
+  "date": "2026-06-01",
+  "tags": ["Spectral GNNs"],
+  "keywords": ["Spectral GNNs", "Diverse Mixing Patterns"],
+  "excerpt": "首先通过取值范围将节点的 local graph frequency 和 global graph frequency 之间建立联系，即能够通过一个$(0,1)$ 之间的参数进行关联，具体实现方面，对于每个节点学习一个基于全图特征值的权重系数，并将其分解为全局分量和局部分量的乘积，全局分量跨节点共享，通过任务损失直接优化，局部分量由位置嵌入$P$经非线性映射得到，捕捉节点的局部结构信息,每个多项式阶都有一个节点‑特化的权重 $\beta_{k,i}$, 它是全局强度与局部缩放的乘积。"
   }
 ]
