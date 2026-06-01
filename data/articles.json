@@ -27,7 +27,7 @@
   {
   "id": "graph_neural_networks_with_diverse_spectral_filtering",
   "title": "Graph Neural Networks with Diverse Spectral Filtering",
-  "file": "articles/Graph-Neural-Networks-with-Diverse-Spectral-Filtering.md",
+  "file": "articles/Graph_Neural_Networks_with_Diverse_Spectral_Filtering.md",
   "type": "md",
   "date": "2026-06-01",
   "tags": ["Spectral GNNs"],
