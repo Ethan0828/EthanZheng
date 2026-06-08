@@ -43,5 +43,5 @@
   "tags": ["Graph Neural Networks"],
   "keywords": ["Long Range Dependencies", "Graph Neural Networks"],
   "excerpt": "2021-Neurips-Representing long-range context for graph neural networks with global attention; 2025-ICLR-Learning long range dependencies on graphs via random walks; 2025-Neurips-On Vanishing Gradients, Over-Smoothing, and Over-Squashing in GNNs: Bridging Recurrent and Graph Learning"
-  },
+  }
 ]
