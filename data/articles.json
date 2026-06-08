@@ -37,7 +37,7 @@
   {
   "id": "survey_on_long_range_dependencies_on_graphs",
   "title": "Survey on Long-Range Dependencies on Graphs",
-  "file": "articles/Survey_on_Long-Range_Dependencies_on_Graphs.md",
+  "file": "articles/Survey_on_Long_Range_Dependencies_on_Graphs.md",
   "type": "md",
   "date": "2026-06-08",
   "tags": ["Graph Neural Networks"],
