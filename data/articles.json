@@ -33,5 +33,15 @@
   "tags": ["Spectral GNNs"],
   "keywords": ["Spectral GNNs", "Diverse Mixing Patterns"],
   "excerpt": "首先通过取值范围将节点的 local graph frequency 和 global graph frequency 之间建立联系，即能够通过一个$(0,1)$ 之间的参数进行关联，具体实现方面，对于每个节点学习一个基于全图特征值的权重系数，并将其分解为全局分量和局部分量的乘积，全局分量跨节点共享，通过任务损失直接优化，局部分量由位置嵌入$P$经非线性映射得到，捕捉节点的局部结构信息,每个多项式阶都有一个节点‑特化的权重 $\beta_{k,i}$, 它是全局强度与局部缩放的乘积。"
-  }
+  },
+  {
+  "id": "survey_on_long_range_dependencies_on_graphs",
+  "title": "Survey on Long-Range Dependencies on Graphs",
+  "file": "articles/Survey_on_Long-Range_Dependencies_on_Graphs.md",
+  "type": "md",
+  "date": "2026-06-08",
+  "tags": ["Graph Neural Networks"],
+  "keywords": ["Long Range Dependencies", "Graph Neural Networks"],
+  "excerpt": "2021-Neurips-Representing long-range context for graph neural networks with global attention; 2025-ICLR-Learning long range dependencies on graphs via random walks; 2025-Neurips-On Vanishing Gradients, Over-Smoothing, and Over-Squashing in GNNs: Bridging Recurrent and Graph Learning"
+  },
 ]
